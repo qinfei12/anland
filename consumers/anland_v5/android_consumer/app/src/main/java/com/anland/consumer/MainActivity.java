@@ -258,6 +258,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+// 新增：进入APP前台，切换百度输入法
+    try {
+        Process proc = Runtime.getRuntime().exec("su -c settings put secure default_input_method com.baidu.input/.ImeService");
+        proc.waitFor();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 
         sInstance = this;
 
@@ -338,6 +345,17 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         surfaceView.setPointerIcon(PointerIcon.getSystemIcon(this, PointerIcon.TYPE_NULL));
     }
 
+@Override
+protected void onStop() {
+    super.onStop();
+    //APP退至后台，还原搜狗原厂输入法
+    try {
+        Process proc = Runtime.getRuntime().exec("su -c settings put secure default_input_method com.sohu.inputmethod.sogouoem/.SogouIME");
+        proc.waitFor();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
     @Override
     protected void onResume() {
         super.onResume();
@@ -368,6 +386,13 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         isTouchpadMode = prefs.getBoolean(KEY_TOUCHPAD_MODE, true);
         mouseAccelStrength = prefs.getFloat(KEY_MOUSE_ACCEL, 1.0f);
         mouseAccelStrength = Math.max(0.5f, Math.min(5.0f, mouseAccelStrength));
+//重新切回Anland前台，强制切换百度输入法
+    try {
+        Process proc = Runtime.getRuntime().exec("su -c settings put secure default_input_method com.baidu.input/.ImeService");
+        proc.waitFor();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     @Override
